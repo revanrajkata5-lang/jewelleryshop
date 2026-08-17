@@ -222,7 +222,7 @@
         </div>
         <div class="row3">
           <div>
-            <label for="fPrice">Price (USD)</label>
+            <label for="fPrice">Price (₹)</label>
             <input type="number" id="fPrice" required min="0" step="1" placeholder="3200">
           </div>
           <div>
@@ -385,7 +385,7 @@
           '<img src="' + p.image_url + '" alt="">' +
           '<div class="info">' +
             '<div class="name">' + (p.name || '(untitled)') + '</div>' +
-            '<div class="meta">' + (p.category || '') + ' · $' + (p.price != null ? p.price : '—') + '</div>' +
+            '<div class="meta">' + (p.category || '') + ' · ₹' + (p.price != null ? Number(p.price).toLocaleString('en-IN') : '—') + '</div>' +
           '</div>' +
           '<button class="danger small" data-action="delete" data-id="' + p.id + '">Delete</button>' +
         '</div>'
@@ -498,7 +498,7 @@
 
   // ---------------- Orders ----------------
 
-  function fmtMoney(n){ return '$' + Number(n).toLocaleString('en-US'); }
+  function fmtMoney(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
   function fmtDate(s){
     try { return new Date(s).toLocaleString(); } catch(e) { return s; }
   }
