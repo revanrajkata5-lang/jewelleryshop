@@ -946,7 +946,11 @@
     </div>
     <div class="cart-foot">
       <div class="field"><label>Name</label><input type="text" id="checkoutName" placeholder="Jane Doe"></div>
-      <div class="field"><label>Email</label><input type="email" id="checkoutEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Mobile Number</label><input type="tel" id="checkoutMobile" placeholder="10-digit mobile number" maxlength="10"></div>
+      <div class="field"><label>Alternative Mobile Number</label><input type="tel" id="checkoutAltMobile" placeholder="Optional" maxlength="10"></div>
+      <div class="field"><label>Address</label><textarea id="checkoutAddress" placeholder="House no, street, landmark" rows="2"></textarea></div>
+      <div class="field"><label>Mandal</label><input type="text" id="checkoutMandal" placeholder="Mandal"></div>
+      <div class="field"><label>District</label><input type="text" id="checkoutDistrict" placeholder="District"></div>
       <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="cartTotal">$0</span></div>
       <button class="btn btn-gold" id="checkoutBtn">Checkout</button>
       <div class="checkout-status" id="checkoutStatus"></div>
@@ -961,6 +965,18 @@
     var SUPABASE_URL = 'https://kiisyribpkttraufwldg.supabase.co';
     var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpaXN5cmlicGt0dHJhdWZ3bGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NjE2MzksImV4cCI6MjEwMjUzNzYzOX0.g_d3q70aIdk2unsiU34h4Q1JW6Z4LdzjFVMyRuJeFBs';
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Paste your WhatsApp business number below in international format, no + or spaces
+    // e.g. '919876543210'. Leave as-is to skip the WhatsApp step.
+    var WHATSAPP_NUMBER = 'YOUR_WHATSAPP_NUMBER';
+
+    function generateOrderId(){
+      var now = new Date();
+      var datePart = String(now.getFullYear()).slice(2) +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        String(now.getDate()).padStart(2, '0');
+      var randPart = Math.floor(1000 + Math.random() * 9000);
+      return 'SK' + datePart + '-' + randPart;
+    }
 
     // ---- Collection rendering (loads live from Supabase "products" table) ----
     var FALLBACK_PRODUCTS = [
@@ -1209,15 +1225,24 @@
       var checkoutBtn = document.getElementById('checkoutBtn');
       var checkoutStatus = document.getElementById('checkoutStatus');
       var checkoutNameEl = document.getElementById('checkoutName');
-      var checkoutEmailEl = document.getElementById('checkoutEmail');
+      var checkoutMobileEl = document.getElementById('checkoutMobile');
+      var checkoutAltMobileEl = document.getElementById('checkoutAltMobile');
+      var checkoutAddressEl = document.getElementById('checkoutAddress');
+      var checkoutMandalEl = document.getElementById('checkoutMandal');
+      var checkoutDistrictEl = document.getElementById('checkoutDistrict');
 
       checkoutBtn.addEventListener('click', async function(){
         if (cart.length === 0) return;
 
         var name = checkoutNameEl.value.trim();
-        var email = checkoutEmailEl.value.trim();
-        if (!name || !email) {
-          checkoutStatus.textContent = 'Please add your name and email to place an order.';
+        var mobile = checkoutMobileEl.value.trim();
+        var altMobile = checkoutAltMobileEl.value.trim();
+        var address = checkoutAddressEl.value.trim();
+        var mandal = checkoutMandalEl.value.trim();
+        var district = checkoutDistrictEl.value.trim();
+
+        if (!name || !/^[0-9]{10}$/.test(mobile) || !address || !mandal || !district) {
+          checkoutStatus.textContent = 'Please fill in name, a valid 10-digit mobile number, address, mandal and district.';
           checkoutStatus.classList.add('show', 'err');
           return;
         }
@@ -1228,6 +1253,7 @@
         }
 
         var total = cart.reduce(function(sum, item){ return sum + item.price; }, 0);
+        var orderId = generateOrderId();
         checkoutBtn.disabled = true;
         checkoutStatus.textContent = 'Placing your order…';
         checkoutStatus.classList.add('show');
@@ -1235,19 +1261,43 @@
 
         try {
           var result = await supabase.from('orders').insert({
+            order_id: orderId,
             customer_name: name,
-            customer_email: email,
+            customer_mobile: mobile,
+            customer_alt_mobile: altMobile || null,
+            address: address,
+            mandal: mandal,
+            district: district,
             items: cart,
             total: total,
             status: 'pending'
           });
           if (result.error) throw result.error;
 
-          checkoutStatus.textContent = 'Order placed — thank you! A confirmation will follow by email.';
+          if (WHATSAPP_NUMBER && WHATSAPP_NUMBER !== 'YOUR_WHATSAPP_NUMBER') {
+            var itemLines = cart.map(function(i){ return '- ' + i.name + ' - $' + i.price; }).join('%0A');
+            var msg =
+              '*New Order* (' + orderId + ')%0A%0A' +
+              itemLines + '%0A' +
+              '*Total: $' + total + '*%0A%0A' +
+              'Name: ' + name + '%0A' +
+              'Mobile: ' + mobile + '%0A' +
+              'Alt. Mobile: ' + (altMobile || '-') + '%0A' +
+              'Address: ' + address + '%0A' +
+              'Mandal: ' + mandal + '%0A' +
+              'District: ' + district;
+            window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
+          }
+
+          checkoutStatus.textContent = 'Order placed! Your Order ID is ' + orderId + '. We\'ll contact you on WhatsApp shortly.';
           cart = [];
           renderCart();
           checkoutNameEl.value = '';
-          checkoutEmailEl.value = '';
+          checkoutMobileEl.value = '';
+          checkoutAltMobileEl.value = '';
+          checkoutAddressEl.value = '';
+          checkoutMandalEl.value = '';
+          checkoutDistrictEl.value = '';
         } catch (e) {
           checkoutStatus.textContent = 'Could not place order: ' + e.message;
           checkoutStatus.classList.add('err');
