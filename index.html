@@ -760,11 +760,6 @@
 </style>
 </head>
 <body>
-  <button id="cart-icon-btn" onclick="openCartModal()">
-  🛒
-  <span id="cart-count-badge" style="display:none;">0</span>
-</button>
-
 <div class="cart-overlay" id="cart-overlay">
   <div class="cart-modal" id="cart-modal">
     <button class="cart-close-btn" onclick="closeCartModal()">&times;</button>
@@ -948,23 +943,6 @@
     <div class="modal-msg" id="accountMsg"></div>
   </div>
 
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-head">
-      <h2>Your Bag</h2>
-      <button class="cart-close" id="cartClose" aria-label="Close cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>
-    </div>
-    <div class="cart-items" id="cartItems">
-      <div class="cart-empty">Your bag is empty.</div>
-    </div>
-    <div class="cart-foot">
-      <div class="field"><label>Name</label><input type="text" id="checkoutName" placeholder="Jane Doe"></div>
-      <div class="field"><label>Email</label><input type="email" id="checkoutEmail" placeholder="you@example.com"></div>
-      <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="cartTotal">$0</span></div>
-      <button class="btn btn-gold" id="checkoutBtn">Checkout</button>
-      <div class="checkout-status" id="checkoutStatus"></div>
-    </div>
-  </div>
-
   <!-- Supabase client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -989,7 +967,7 @@
     }
 
     function fmtPrice(n){
-      return '$' + Number(n).toLocaleString('en-US');
+      return '₹' + Number(n).toLocaleString('en-IN');
     }
 
     // Normalizes a Supabase product row (snake_case columns) into the shape
