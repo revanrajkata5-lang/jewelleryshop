@@ -133,9 +133,21 @@
   }
   .order-row .order-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
   .order-row .order-cust{ font-family:'Cormorant Garamond', serif; font-size:17px; }
-  .order-row .order-cust .email{ font-family:'Jost', sans-serif; font-size:12px; color:rgba(245,239,226,0.55); display:block; }
+  .order-row .order-cust .order-id{ font-family:'Jost', sans-serif; font-size:12px; color:var(--gold-soft); display:block; letter-spacing:0.04em; }
   .order-row .order-total{ font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--gold-soft); }
   .order-row .order-meta{ font-size:11px; color:rgba(245,239,226,0.45); margin-top:2px; }
+  .order-row .order-details{
+    margin-top:10px; padding:10px 12px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line); border-radius:6px;
+    display:grid; grid-template-columns:1fr 1fr; gap:6px 16px;
+    font-size:13px;
+  }
+  .order-row .order-details .full{ grid-column:1 / -1; }
+  .order-row .order-details .label{ font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(245,239,226,0.45); display:block; }
+  .order-row .order-details .value{ color:rgba(245,239,226,0.9); word-break:break-word; }
+  .order-row .order-details a{ color:var(--gold-soft); text-decoration:none; }
+  .order-row .order-details a:hover{ text-decoration:underline; }
   .order-row .order-items{ margin-top:10px; font-size:13px; color:rgba(245,239,226,0.8); }
   .order-row .order-items div{ display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed var(--line); }
   .order-row .order-items div:last-child{ border-bottom:none; }
@@ -500,11 +512,13 @@
     var optionsHtml = statuses.map(function(s){
       return '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>';
     }).join('');
+    var waNumber = (o.customer_mobile || '').replace(/[^0-9]/g, '');
+    var waLink = waNumber ? '<a href="https://wa.me/91' + waNumber + '" target="_blank">' + o.customer_mobile + ' ↗</a>' : (o.customer_mobile || '—');
     return (
       '<div class="order-row" data-id="' + o.id + '">' +
         '<div class="order-head">' +
           '<div class="order-cust">' + (o.customer_name || 'Unknown') +
-            '<span class="email">' + (o.customer_email || '') + '</span>' +
+            '<span class="order-id">' + (o.order_id || '') + '</span>' +
           '</div>' +
           '<div style="text-align:right">' +
             '<div class="order-total">' + fmtMoney(o.total) + '</div>' +
@@ -512,6 +526,13 @@
           '</div>' +
         '</div>' +
         '<div class="order-meta">' + fmtDate(o.created_at) + '</div>' +
+        '<div class="order-details">' +
+          '<div><span class="label">Mobile</span><span class="value">' + waLink + '</span></div>' +
+          '<div><span class="label">Alternative Mobile</span><span class="value">' + (o.customer_alt_mobile || '—') + '</span></div>' +
+          '<div class="full"><span class="label">Address</span><span class="value">' + (o.address || '—') + '</span></div>' +
+          '<div><span class="label">Mandal</span><span class="value">' + (o.mandal || '—') + '</span></div>' +
+          '<div><span class="label">District</span><span class="value">' + (o.district || '—') + '</span></div>' +
+        '</div>' +
         '<div class="order-items">' + itemsHtml + '</div>' +
         '<div class="order-actions">' +
           '<select data-action="status" data-id="' + o.id + '">' + optionsHtml + '</select>' +
