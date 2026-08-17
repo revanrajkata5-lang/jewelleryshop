@@ -951,7 +951,7 @@
       <div class="field"><label>Address</label><textarea id="checkoutAddress" placeholder="House no, street, landmark" rows="2"></textarea></div>
       <div class="field"><label>Mandal</label><input type="text" id="checkoutMandal" placeholder="Mandal"></div>
       <div class="field"><label>District</label><input type="text" id="checkoutDistrict" placeholder="District"></div>
-      <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="cartTotal">$0</span></div>
+      <div class="cart-total-row"><span>Subtotal</span><span class="amt" id="cartTotal">₹0</span></div>
       <button class="btn btn-gold" id="checkoutBtn">Checkout</button>
       <div class="checkout-status" id="checkoutStatus"></div>
     </div>
@@ -993,7 +993,7 @@
     }
 
     function fmtPrice(n){
-      return '$' + Number(n).toLocaleString('en-US');
+      return '₹' + Number(n).toLocaleString('en-IN');
     }
 
     // Normalizes a Supabase product row (snake_case columns) into the shape
@@ -1186,7 +1186,7 @@
       var cartTotalEl = document.getElementById('cartTotal');
       var cart = []; // {name, cat, price}
 
-      function fmt(n){ return '$' + n.toLocaleString('en-US'); }
+      function fmt(n){ return '₹' + n.toLocaleString('en-IN'); }
 
       function renderCart(){
         if (cart.length === 0) {
@@ -1275,11 +1275,11 @@
           if (result.error) throw result.error;
 
           if (WHATSAPP_NUMBER && WHATSAPP_NUMBER !== 'YOUR_WHATSAPP_NUMBER') {
-            var itemLines = cart.map(function(i){ return '- ' + i.name + ' - $' + i.price; }).join('%0A');
+            var itemLines = cart.map(function(i){ return '- ' + i.name + ' - ₹' + i.price; }).join('%0A');
             var msg =
               '*New Order* (' + orderId + ')%0A%0A' +
               itemLines + '%0A' +
-              '*Total: $' + total + '*%0A%0A' +
+              '*Total: ₹' + total + '*%0A%0A' +
               'Name: ' + name + '%0A' +
               'Mobile: ' + mobile + '%0A' +
               'Alt. Mobile: ' + (altMobile || '-') + '%0A' +
