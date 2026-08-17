@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin — The Style Katha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-dark:#13110d;
+    --bg-dark-2:#1c1912;
+    --cream:#f5efe2;
+    --cream-2:#ece3cf;
+    --ink:#28221a;
+    --gold:#c9a35c;
+    --gold-deep:#9c7b3c;
+    --gold-soft:#e6cd97;
+    --line: rgba(201,163,92,0.35);
+    --danger:#c0564a;
+    --ok:#7fb896;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg-dark);
+    color:var(--cream);
+    font-family:'Jost', sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3{ font-family:'Cormorant Garamond', serif; font-weight:600; letter-spacing:0.01em; }
+  a{ color:var(--gold-soft); }
+  code{ background:rgba(255,255,255,0.06); padding:1px 5px; border-radius:4px; font-size:12px; }
+
+  header{
+    border-bottom:1px solid var(--line);
+    padding:20px 28px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  header .brand{ font-family:'Cormorant Garamond', serif; font-size:22px; letter-spacing:0.14em; }
+  header .brand em{ color:var(--gold); font-style:normal; }
+  header .sub{ font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-soft); opacity:0.8; }
+  header .right{ display:flex; align-items:center; gap:16px; font-size:12px; }
+  header nav a{ font-size:12px; letter-spacing:0.1em; text-transform:uppercase; }
+
+  main{ max-width:1080px; margin:0 auto; padding:32px 24px 80px; }
+
+  .card-panel{
+    background:var(--bg-dark-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px;
+    margin-bottom:28px;
+  }
+  .card-panel h2{ font-size:22px; margin-bottom:6px; }
+  .panel-hint{ font-size:13px; color:rgba(245,239,226,0.6); margin-bottom:18px; line-height:1.5; }
+
+  label{ display:block; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold-soft); margin-bottom:6px; }
+  input[type=text], input[type=number], input[type=email], input[type=password], select{
+    width:100%;
+    background:var(--bg-dark);
+    border:1px solid var(--line);
+    color:var(--cream);
+    padding:11px 12px;
+    border-radius:6px;
+    font-family:'Jost', sans-serif;
+    font-size:14px;
+    margin-bottom:16px;
+  }
+  input:focus, select:focus{ outline:none; border-color:var(--gold); }
+  input[type=file]{
+    width:100%;
+    color:rgba(245,239,226,0.75);
+    font-size:13px;
+    margin-bottom:16px;
+  }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  @media (max-width:640px){ .row, .row3{ grid-template-columns:1fr; } }
+
+  button{
+    font-family:'Jost', sans-serif;
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:12px 22px;
+    border-radius:6px;
+    border:1px solid var(--gold);
+    background:var(--gold);
+    color:var(--bg-dark);
+    font-weight:500;
+    cursor:pointer;
+    transition:opacity .15s ease;
+  }
+  button:hover{ opacity:0.88; }
+  button:disabled{ opacity:0.5; cursor:not-allowed; }
+  button.ghost{ background:transparent; color:var(--cream); border-color:var(--line); }
+  button.danger{ background:transparent; color:var(--danger); border-color:var(--danger); }
+  button.small{ padding:7px 12px; font-size:11px; }
+
+  .status{
+    margin-top:14px;
+    font-size:13px;
+    padding:10px 12px;
+    border-radius:6px;
+    display:none;
+    line-height:1.5;
+  }
+  .status.show{ display:block; }
+  .status.ok{ background:rgba(90,140,110,0.15); color:#a9d6b8; border:1px solid rgba(90,140,110,0.4); }
+  .status.err{ background:rgba(192,86,74,0.12); color:#e6a89f; border:1px solid rgba(192,86,74,0.4); }
+  .status.info{ background:rgba(201,163,92,0.1); color:var(--gold-soft); border:1px solid var(--line); }
+
+  .product-list, .order-list{ display:flex; flex-direction:column; gap:10px; }
+  .product-row{
+    display:flex; align-items:center; gap:14px;
+    background:var(--bg-dark);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+  }
+  .product-row img{ width:52px; height:52px; object-fit:cover; border-radius:6px; background:#000; }
+  .product-row .info{ flex:1; min-width:0; }
+  .product-row .info .name{ font-family:'Cormorant Garamond', serif; font-size:16px; }
+  .product-row .info .meta{ font-size:12px; color:rgba(245,239,226,0.55); }
+
+  .order-row{
+    background:var(--bg-dark);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:14px 16px;
+  }
+  .order-row .order-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .order-row .order-cust{ font-family:'Cormorant Garamond', serif; font-size:17px; }
+  .order-row .order-cust .email{ font-family:'Jost', sans-serif; font-size:12px; color:rgba(245,239,226,0.55); display:block; }
+  .order-row .order-total{ font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--gold-soft); }
+  .order-row .order-meta{ font-size:11px; color:rgba(245,239,226,0.45); margin-top:2px; }
+  .order-row .order-items{ margin-top:10px; font-size:13px; color:rgba(245,239,226,0.8); }
+  .order-row .order-items div{ display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dashed var(--line); }
+  .order-row .order-items div:last-child{ border-bottom:none; }
+  .order-row .order-actions{ margin-top:12px; display:flex; align-items:center; gap:10px; }
+  .status-pill{
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    padding:4px 9px; border-radius:20px; border:1px solid var(--line);
+  }
+  .status-pill.pending{ color:var(--gold-soft); border-color:var(--gold); }
+  .status-pill.paid{ color:var(--ok); border-color:var(--ok); }
+  .status-pill.shipped{ color:#9ec7e6; border-color:#9ec7e6; }
+  .status-pill.completed{ color:var(--ok); border-color:var(--ok); }
+  .status-pill.cancelled{ color:var(--danger); border-color:var(--danger); }
+
+  .empty-state{ font-size:13px; color:rgba(245,239,226,0.5); padding:14px 0; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">The <em>Style Katha</em></div>
+    <div class="sub">Collection &amp; Orders Admin</div>
+  </div>
+  <div class="right">
+    <span id="whoami"></span>
+    <nav><a href="index.html">← Back to site</a></nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- Login -->
+  <div class="card-panel" id="loginPanel">
+    <h2>Sign in</h2>
+    <p class="panel-hint">
+      Sign in with the admin account you created in Supabase (Authentication → Users).
+      This page only shows product &amp; order management once you're authenticated — the underlying data is also
+      locked down server-side with Row Level Security, so this isn't just a UI-level gate.
+    </p>
+    <div class="row">
+      <div>
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" autocomplete="username" placeholder="admin@yourdomain.com">
+      </div>
+      <div>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" autocomplete="current-password" placeholder="••••••••">
+      </div>
+    </div>
+    <button id="loginBtn">Sign In</button>
+    <div class="status" id="loginStatus"></div>
+  </div>
+
+  <!-- Admin content, shown only when signed in -->
+  <div id="adminContent" class="hidden">
+
+    <div class="card-panel">
+      <h2>Add a piece</h2>
+      <p class="panel-hint">Uploads the image to Supabase Storage and adds a row to the <code>products</code> table.</p>
+      <form id="addForm">
+        <div class="row">
+          <div>
+            <label for="fName">Name</label>
+            <input type="text" id="fName" required placeholder="e.g. Lyra Tennis Bracelet">
+          </div>
+          <div>
+            <label for="fCategory">Category</label>
+            <input type="text" id="fCategory" required placeholder="e.g. Bracelet · Diamond">
+          </div>
+        </div>
+        <div class="row3">
+          <div>
+            <label for="fPrice">Price (USD)</label>
+            <input type="number" id="fPrice" required min="0" step="1" placeholder="3200">
+          </div>
+          <div>
+            <label for="fOldPrice">Old price (optional)</label>
+            <input type="number" id="fOldPrice" min="0" step="1" placeholder="3800">
+          </div>
+          <div>
+            <label for="fBadge">Badge (optional)</label>
+            <select id="fBadge">
+              <option value="">None</option>
+              <option value="New">New</option>
+              <option value="Bestseller">Bestseller</option>
+              <option value="Limited">Limited</option>
+            </select>
+          </div>
+        </div>
+        <label for="fImage">Product image</label>
+        <input type="file" id="fImage" accept="image/*" required>
+        <button type="submit" id="submitBtn">Publish to Collection</button>
+        <div class="status" id="addStatus"></div>
+      </form>
+    </div>
+
+    <div class="card-panel">
+      <h2>Current collection</h2>
+      <button class="ghost small" id="refreshProductsBtn" type="button">Refresh</button>
+      <div style="height:14px"></div>
+      <div class="product-list" id="productList">
+        <div class="empty-state">Loading…</div>
+      </div>
+      <div class="status" id="listStatus"></div>
+    </div>
+
+    <div class="card-panel">
+      <h2>Orders</h2>
+      <p class="panel-hint">Live from the <code>orders</code> table. New orders appear automatically without a refresh.</p>
+      <button class="ghost small" id="refreshOrdersBtn" type="button">Refresh</button>
+      <div style="height:14px"></div>
+      <div class="order-list" id="orderList">
+        <div class="empty-state">Loading…</div>
+      </div>
+      <div class="status" id="orderStatus"></div>
+    </div>
+
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  // ---- Supabase config: paste in your project's values ----
+  var SUPABASE_URL = 'https://kiisyribpkttraufwldg.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpaXN5cmlicGt0dHJhdWZ3bGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NjE2MzksImV4cCI6MjEwMjUzNzYzOX0.g_d3q70aIdk2unsiU34h4Q1JW6Z4LdzjFVMyRuJeFBs';
+  var PRODUCT_BUCKET = 'product-images';
+
+  var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var loginPanel = document.getElementById('loginPanel');
+  var adminContent = document.getElementById('adminContent');
+  var whoami = document.getElementById('whoami');
+  var loginEmail = document.getElementById('loginEmail');
+  var loginPassword = document.getElementById('loginPassword');
+  var loginBtn = document.getElementById('loginBtn');
+  var loginStatus = document.getElementById('loginStatus');
+
+  var addForm = document.getElementById('addForm');
+  var submitBtn = document.getElementById('submitBtn');
+  var addStatus = document.getElementById('addStatus');
+  var productList = document.getElementById('productList');
+  var listStatus = document.getElementById('listStatus');
+  var refreshProductsBtn = document.getElementById('refreshProductsBtn');
+
+  var orderList = document.getElementById('orderList');
+  var orderStatus = document.getElementById('orderStatus');
+  var refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
+
+  var ordersChannel = null;
+
+  function setStatus(el, kind, msg){
+    el.className = 'status show ' + kind;
+    el.textContent = msg;
+  }
+  function clearStatus(el){
+    el.className = 'status';
+    el.textContent = '';
+  }
+
+  function slugify(str){
+    return String(str).toLowerCase()
+      .normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'piece';
+  }
+
+  // ---------------- Auth ----------------
+
+  async function refreshSession(){
+    var res = await supabase.auth.getSession();
+    var session = res.data && res.data.session;
+    if (session) {
+      loginPanel.classList.add('hidden');
+      adminContent.classList.remove('hidden');
+      whoami.textContent = session.user.email;
+      loadProducts();
+      loadOrders();
+      subscribeToOrders();
+    } else {
+      loginPanel.classList.remove('hidden');
+      adminContent.classList.add('hidden');
+      whoami.textContent = '';
+      unsubscribeFromOrders();
+    }
+  }
+
+  supabase.auth.onAuthStateChange(function(){ refreshSession(); });
+
+  loginBtn.addEventListener('click', async function(){
+    var email = loginEmail.value.trim();
+    var password = loginPassword.value;
+    if (!email || !password) {
+      setStatus(loginStatus, 'err', 'Enter your email and password.');
+      return;
+    }
+    loginBtn.disabled = true;
+    clearStatus(loginStatus);
+    try {
+      var result = await supabase.auth.signInWithPassword({ email: email, password: password });
+      if (result.error) throw result.error;
+      loginPassword.value = '';
+    } catch (e) {
+      setStatus(loginStatus, 'err', e.message);
+    } finally {
+      loginBtn.disabled = false;
+    }
+  });
+
+  function addSignOutHandler(){
+    var btn = document.createElement('button');
+    btn.className = 'ghost small';
+    btn.textContent = 'Sign out';
+    btn.type = 'button';
+    btn.addEventListener('click', async function(){
+      await supabase.auth.signOut();
+    });
+    whoami.parentElement.insertBefore(btn, whoami.nextSibling);
+  }
+  addSignOutHandler();
+
+  // ---------------- Products ----------------
+
+  function renderProductList(products){
+    if (!products.length) {
+      productList.innerHTML = '<div class="empty-state">No products yet.</div>';
+      return;
+    }
+    productList.innerHTML = products.map(function(p){
+      return (
+        '<div class="product-row" data-id="' + p.id + '">' +
+          '<img src="' + p.image_url + '" alt="">' +
+          '<div class="info">' +
+            '<div class="name">' + (p.name || '(untitled)') + '</div>' +
+            '<div class="meta">' + (p.category || '') + ' · $' + (p.price != null ? p.price : '—') + '</div>' +
+          '</div>' +
+          '<button class="danger small" data-action="delete" data-id="' + p.id + '">Delete</button>' +
+        '</div>'
+      );
+    }).join('');
+
+    productList.querySelectorAll('[data-action="delete"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        deleteProduct(btn.getAttribute('data-id'));
+      });
+    });
+  }
+
+  async function loadProducts(){
+    clearStatus(listStatus);
+    productList.innerHTML = '<div class="empty-state">Loading…</div>';
+    try {
+      var result = await supabase.from('products').select('*').order('created_at', { ascending: false });
+      if (result.error) throw result.error;
+      renderProductList(result.data || []);
+    } catch (e) {
+      productList.innerHTML = '<div class="empty-state">Could not load collection.</div>';
+      setStatus(listStatus, 'err', e.message);
+    }
+  }
+
+  async function deleteProduct(id){
+    if (!confirm('Remove this piece from the live collection?')) return;
+    clearStatus(listStatus);
+    try {
+      var result = await supabase.from('products').delete().eq('id', id).select();
+      if (result.error) throw result.error;
+      var removed = result.data && result.data[0];
+      if (removed && removed.image_path) {
+        await supabase.storage.from(PRODUCT_BUCKET).remove([removed.image_path]);
+      }
+      setStatus(listStatus, 'ok', 'Removed.');
+      loadProducts();
+    } catch (e) {
+      setStatus(listStatus, 'err', e.message);
+    }
+  }
+
+  refreshProductsBtn.addEventListener('click', loadProducts);
+
+  addForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    var name = document.getElementById('fName').value.trim();
+    var category = document.getElementById('fCategory').value.trim();
+    var price = parseInt(document.getElementById('fPrice').value, 10);
+    var oldPriceVal = document.getElementById('fOldPrice').value;
+    var oldPrice = oldPriceVal ? parseInt(oldPriceVal, 10) : null;
+    var badge = document.getElementById('fBadge').value;
+    var fileInput = document.getElementById('fImage');
+    var file = fileInput.files[0];
+
+    if (!name || !category || isNaN(price) || !file) {
+      setStatus(addStatus, 'err', 'Fill in name, category, price and choose an image.');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setStatus(addStatus, 'err', 'Image is over 8MB — please use a smaller file.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    clearStatus(addStatus);
+    setStatus(addStatus, 'info', 'Uploading image…');
+
+    try {
+      var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      var slug = slugify(name) + '-' + Date.now();
+      var imagePath = slug + '.' + ext;
+
+      var uploadResult = await supabase.storage.from(PRODUCT_BUCKET).upload(imagePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+      if (uploadResult.error) throw uploadResult.error;
+
+      var publicUrlResult = supabase.storage.from(PRODUCT_BUCKET).getPublicUrl(imagePath);
+      var imageUrl = publicUrlResult.data.publicUrl;
+
+      setStatus(addStatus, 'info', 'Saving product…');
+
+      var newProduct = {
+        name: name,
+        category: category,
+        price: price,
+        old_price: oldPrice,
+        badge: badge || null,
+        badge_alt: badge === 'Bestseller',
+        image_url: imageUrl,
+        image_path: imagePath
+      };
+
+      var insertResult = await supabase.from('products').insert(newProduct);
+      if (insertResult.error) throw insertResult.error;
+
+      setStatus(addStatus, 'ok', '"' + name + '" published — live on the site now.');
+      addForm.reset();
+      loadProducts();
+    } catch (e) {
+      setStatus(addStatus, 'err', e.message);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  // ---------------- Orders ----------------
+
+  function fmtMoney(n){ return '$' + Number(n).toLocaleString('en-US'); }
+  function fmtDate(s){
+    try { return new Date(s).toLocaleString(); } catch(e) { return s; }
+  }
+
+  function orderRowHTML(o){
+    var items = Array.isArray(o.items) ? o.items : [];
+    var itemsHtml = items.map(function(it){
+      return '<div><span>' + (it.name || '') + '</span><span>' + fmtMoney(it.price || 0) + '</span></div>';
+    }).join('');
+    var statuses = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
+    var optionsHtml = statuses.map(function(s){
+      return '<option value="' + s + '"' + (o.status === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+    return (
+      '<div class="order-row" data-id="' + o.id + '">' +
+        '<div class="order-head">' +
+          '<div class="order-cust">' + (o.customer_name || 'Unknown') +
+            '<span class="email">' + (o.customer_email || '') + '</span>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div class="order-total">' + fmtMoney(o.total) + '</div>' +
+            '<span class="status-pill ' + o.status + '">' + o.status + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="order-meta">' + fmtDate(o.created_at) + '</div>' +
+        '<div class="order-items">' + itemsHtml + '</div>' +
+        '<div class="order-actions">' +
+          '<select data-action="status" data-id="' + o.id + '">' + optionsHtml + '</select>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function renderOrderList(orders){
+    if (!orders.length) {
+      orderList.innerHTML = '<div class="empty-state">No orders yet.</div>';
+      return;
+    }
+    orderList.innerHTML = orders.map(orderRowHTML).join('');
+    orderList.querySelectorAll('[data-action="status"]').forEach(function(sel){
+      sel.addEventListener('change', function(){
+        updateOrderStatus(sel.getAttribute('data-id'), sel.value);
+      });
+    });
+  }
+
+  async function loadOrders(){
+    clearStatus(orderStatus);
+    orderList.innerHTML = '<div class="empty-state">Loading…</div>';
+    try {
+      var result = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+      if (result.error) throw result.error;
+      renderOrderList(result.data || []);
+    } catch (e) {
+      orderList.innerHTML = '<div class="empty-state">Could not load orders.</div>';
+      setStatus(orderStatus, 'err', e.message);
+    }
+  }
+
+  async function updateOrderStatus(id, status){
+    clearStatus(orderStatus);
+    try {
+      var result = await supabase.from('orders').update({ status: status }).eq('id', id);
+      if (result.error) throw result.error;
+      setStatus(orderStatus, 'ok', 'Order updated.');
+      loadOrders();
+    } catch (e) {
+      setStatus(orderStatus, 'err', e.message);
+    }
+  }
+
+  refreshOrdersBtn.addEventListener('click', loadOrders);
+
+  function subscribeToOrders(){
+    if (ordersChannel) return;
+    ordersChannel = supabase
+      .channel('orders-admin')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, function(){
+        loadOrders();
+      })
+      .subscribe();
+  }
+  function unsubscribeFromOrders(){
+    if (ordersChannel) {
+      supabase.removeChannel(ordersChannel);
+      ordersChannel = null;
+    }
+  }
+
+  // ---------------- Init ----------------
+  refreshSession();
+})();
+</script>
+
+</body>
+</html>
